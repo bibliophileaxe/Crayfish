@@ -116,8 +116,8 @@ class HomarusController
         $cmd_params = "";
         if ($format == "mp4") {
             $cmd_params = " -vcodec libx264 -preset medium -acodec aac " .
-                "-strict -2 -ab 128k -ac 2 -async 1 -movflags " .
-                "frag_keyframe+empty_moov ";
+                "-strict -2 -b:a 128k -ac 2";
+            $destination = $source . '.mp4';
         }
 
         // Arguments to ffmpeg command are sent as a custom header.
@@ -144,6 +144,13 @@ class HomarusController
 
         // Return response.
         try {
+          if (isset($destination)) {
+            $this->cmd->execute($cmd_string . ' ' . $destination, $source);
+            $cmd_params = '-moveflags faststart';
+            $source = $destination;
+            $cmd_string = "$this->executable -headers $headers -i $source  $args $cmd_params -f $format -";
+          }
+
             return new StreamedResponse(
                 $this->cmd->execute($cmd_string, $source),
                 200,
