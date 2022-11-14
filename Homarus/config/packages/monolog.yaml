@@ -21,7 +21,7 @@ monolog:
 
         homarus:
             type: rotating_file
-            path: /tmp/Homarus.log
+            path: /var/log/crayfish/homarus.log
             level: DEBUG
             max_files: 1
             channels: ["!event", "!console"]
